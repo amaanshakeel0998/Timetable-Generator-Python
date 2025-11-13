@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>University Timetable Generator</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-content">
+          <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            <h1>University Timetable Generator</h1>
+          </div>
+          <p class="subtitle">Multi-Semester Automated Scheduling System</p>
+          <!-- Theme Toggle Button -->
+          <button class="theme-toggle-btn" id="theme-toggle-btn">
+            <i class="fas fa-palette"></i> Customize Colors
+          </button>
+        </div>
+      </header>
+
+      <!-- Theme Customization Panel -->
+      <div class="theme-panel" id="theme-panel">
+        <div class="theme-panel-content">
+          <div class="theme-panel-header">
+            <h3><i class="fas fa-palette"></i> Theme Customization</h3>
+            <button class="close-theme-btn" id="close-theme-btn">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="theme-panel-body">
+            <div class="color-picker-group">
+              <div class="color-picker-item">
+                <label for="header-color">
+                  <i class="fas fa-paint-brush"></i> Header Color
+                </label>
+                <div class="color-input-group">
+                  <input type="color" id="header-color" value="#4a90e2" />
+                  <input
+                    type="text"
+                    id="header-color-text"
+                    value="#4a90e2"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="color-picker-item">
+                <label for="body-color">
+                  <i class="fas fa-fill-drip"></i> Body/Section Color
+                </label>
+                <div class="color-input-group">
+                  <input type="color" id="body-color" value="#f5f7fa" />
+                  <input
+                    type="text"
+                    id="body-color-text"
+                    value="#f5f7fa"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="color-picker-item">
+                <label for="card-color">
+                  <i class="fas fa-square"></i> Card Background
+                </label>
+                <div class="color-input-group">
+                  <input type="color" id="card-color" value="#ffffff" />
+                  <input
+                    type="text"
+                    id="card-color-text"
+                    value="#ffffff"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="color-picker-item">
+                <label for="accent-color">
+                  <i class="fas fa-star"></i> Accent Color
+                </label>
+                <div class="color-input-group">
+                  <input type="color" id="accent-color" value="#4a90e2" />
+                  <input
+                    type="text"
+                    id="accent-color-text"
+                    value="#4a90e2"
+                    readonly
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="theme-presets">
+              <h4><i class="fas fa-swatchbook"></i> Quick Presets</h4>
+              <div class="preset-buttons">
+                <button class="preset-btn" data-preset="default">
+                  <span
+                    class="preset-color"
+                    style="
+                      background: linear-gradient(135deg, #4a90e2, #357abd);
+                    "
+                  ></span>
+                  Default Blue
+                </button>
+                <button class="preset-btn" data-preset="purple">
+                  <span
+                    class="preset-color"
+                    style="
+                      background: linear-gradient(135deg, #667eea, #764ba2);
+                    "
+                  ></span>
+                  Purple
+                </button>
+                <button class="preset-btn" data-preset="green">
+                  <span
+                    class="preset-color"
+                    style="
+                      background: linear-gradient(135deg, #56ab2f, #a8e063);
+                    "
+                  ></span>
+                  Green
+                </button>
+                <button class="preset-btn" data-preset="orange">
+                  <span
+                    class="preset-color"
+                    style="
+                      background: linear-gradient(135deg, #f46b45, #eea849);
+                    "
+                  ></span>
+                  Orange
+                </button>
+                <button class="preset-btn" data-preset="red">
+                  <span
+                    class="preset-color"
+                    style="
+                      background: linear-gradient(135deg, #eb3349, #f45c43);
+                    "
+                  ></span>
+                  Red
+                </button>
+                <button class="preset-btn" data-preset="dark">
+                  <span
+                    class="preset-color"
+                    style="
+                      background: linear-gradient(135deg, #2c3e50, #34495e);
+                    "
+                  ></span>
+                  Dark
+                </button>
+              </div>
+            </div>
+
+            <div class="theme-actions">
+              <button class="btn btn-secondary" id="reset-theme-btn">
+                <i class="fas fa-undo"></i> Reset
+              </button>
+              <button class="btn btn-primary" id="apply-theme-btn">
+                <i class="fas fa-check"></i> Apply Theme
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <nav class="nav-menu">
+            <button class="nav-item active" data-section="input">
+              <i class="fas fa-keyboard"></i>
+              <span>Data Input</span>
+            </button>
+            <button class="nav-item" data-section="timetable">
+              <i class="fas fa-table"></i>
+              <span>View Timetable</span>
+            </button>
+            <button class="nav-item" data-section="conflicts">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span>Conflicts</span>
+            </button>
+          </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content">
+          <!-- Input Section -->
+          <section id="input-section" class="section active">
+            <h2 class="section-title">
+              <i class="fas fa-database"></i>
+              Input Data
+            </h2>
+
+            <!-- Semester Setup -->
+            <div class="card">
+              <h3 class="card-title">
+                <i class="fas fa-layer-group"></i> Semester Configuration
+              </h3>
+              <div class="semester-config">
+                <div class="form-group">
+                  <label>Number of Semesters</label>
+                  <input
+                    type="number"
+                    id="semester-count"
+                    min="1"
+                    max="10"
+                    value="3"
+                    placeholder="e.g., 3"
+                  />
+                </div>
+                <button class="btn btn-primary" id="setup-semesters-btn">
+                  <i class="fas fa-cog"></i> Setup Semesters
+                </button>
+              </div>
+              <div id="semesters-list"></div>
+            </div>
+
+            <!-- Days and Time Slots -->
+            <div class="card">
+              <h3 class="card-title">
+                <i class="fas fa-clock"></i> Schedule Configuration
+              </h3>
+              <div class="form-group">
+                <label>Days of the Week</label>
+                <div class="checkbox-group">
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="day-checkbox"
+                      value="Monday"
+                      checked
+                    />
+                    Monday</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="day-checkbox"
+                      value="Tuesday"
+                      checked
+                    />
+                    Tuesday</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="day-checkbox"
+                      value="Wednesday"
+                      checked
+                    />
+                    Wednesday</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="day-checkbox"
+                      value="Thursday"
+                      checked
+                    />
+                    Thursday</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="day-checkbox"
+                      value="Friday"
+                      checked
+                    />
+                    Friday</label
+                  >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Time Slots</label>
+                <div id="time-slots-container">
+                  <div class="input-tag-group"></div>
+                </div>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="new-timeslot"
+                    placeholder="e.g., 08:00 - 09:00"
+                  />
+                  <button class="btn btn-secondary" id="add-timeslot-btn">
+                    <i class="fas fa-plus"></i> Add
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Teachers -->
+            <div class="card">
+              <h3 class="card-title">
+                <i class="fas fa-chalkboard-teacher"></i> Teachers
+              </h3>
+              <div id="teachers-list" class="items-list"></div>
+              <div class="form-group">
+                <label>Teacher Name</label>
+                <input
+                  type="text"
+                  id="teacher-name"
+                  placeholder="e.g., Dr. Smith"
+                />
+              </div>
+              <div class="form-group">
+                <label>Subjects (comma-separated)</label>
+                <input
+                  type="text"
+                  id="teacher-subjects"
+                  placeholder="e.g., Mathematics, Physics"
+                />
+              </div>
+              <div class="form-group">
+                <label>Available Days</label>
+                <div class="checkbox-group">
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="teacher-day"
+                      value="Monday"
+                    />
+                    Monday</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="teacher-day"
+                      value="Tuesday"
+                    />
+                    Tuesday</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="teacher-day"
+                      value="Wednesday"
+                    />
+                    Wednesday</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="teacher-day"
+                      value="Thursday"
+                    />
+                    Thursday</label
+                  >
+                  <label
+                    ><input
+                      type="checkbox"
+                      class="teacher-day"
+                      value="Friday"
+                    />
+                    Friday</label
+                  >
+                </div>
+              </div>
+              <button class="btn btn-primary" id="add-teacher-btn">
+                <i class="fas fa-user-plus"></i> Add Teacher
+              </button>
+            </div>
+
+            <!-- Subjects -->
+            <div class="card">
+              <h3 class="card-title">
+                <i class="fas fa-book"></i> Subjects/Classes
+              </h3>
+              <div id="subjects-list" class="items-list"></div>
+              <div class="form-group">
+                <label>Semester</label>
+                <select id="subject-semester">
+                  <option value="Semester 1">Semester 1</option>
+                </select>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Subject Name</label>
+                  <input
+                    type="text"
+                    id="subject-name"
+                    placeholder="e.g., Advanced Mathematics"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Sessions per Week</label>
+                  <input
+                    type="number"
+                    id="sessions-per-week"
+                    min="1"
+                    max="10"
+                    value="2"
+                    placeholder="2"
+                  />
+                </div>
+              </div>
+              <button class="btn btn-primary" id="add-subject-btn">
+                <i class="fas fa-book-plus"></i> Add Subject
+              </button>
+            </div>
+
+            <!-- Classrooms -->
+            <div class="card">
+              <h3 class="card-title">
+                <i class="fas fa-door-open"></i> Classrooms
+              </h3>
+              <div id="classrooms-list">
+                <div class="input-tag-group"></div>
+              </div>
+              <div class="input-group">
+                <input
+                  type="text"
+                  id="classroom-name"
+                  placeholder="e.g., Room 101"
+                />
+                <button class="btn btn-secondary" id="add-classroom-btn">
+                  <i class="fas fa-plus"></i> Add
+                </button>
+              </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="action-bar">
+              <button class="btn btn-success btn-large" id="generate-btn">
+                <i class="fas fa-magic"></i> Generate Timetable
+              </button>
+            </div>
+          </section>
+
+          <!-- Timetable Section -->
+          <section id="timetable-section" class="section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <i class="fas fa-calendar-alt"></i>
+                Generated Timetable
+              </h2>
+              <div class="button-group">
+                <button class="btn btn-primary" id="export-pdf-btn">
+                  <i class="fas fa-file-pdf"></i> Export PDF
+                </button>
+                <button class="btn btn-success" id="export-excel-btn">
+                  <i class="fas fa-file-excel"></i> Export Excel
+                </button>
+              </div>
+            </div>
+
+            
+            <div id="timetable-container">
+              <p class="empty-state">
+                <i class="fas fa-calendar-times"></i>
+                No timetable generated yet. Please input data and click
+                "Generate Timetable".
+              </p>
+            </div>
+          </section>
+
+          <!-- Conflicts Section -->
+          <section id="conflicts-section" class="section">
+            <h2 class="section-title">
+              <i class="fas fa-exclamation-circle"></i>
+              Scheduling Conflicts
+            </h2>
+            <div class="card">
+              <div id="conflicts-container">
+                <p class="empty-state">
+                  <i class="fas fa-check-circle"></i>
+                  No conflicts detected.
+                </p>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-edit"></i> Edit Timetable Entry</h3>
+          <span class="close" id="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="edit-subject" />
+          </div>
+          <div class="form-group">
+            <label>Teacher</label>
+            <input type="text" id="edit-teacher" />
+          </div>
+          <div class="form-group">
+            <label>Semester</label>
+            <input type="text" id="edit-semester" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancel-edit-btn">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+          <button class="btn btn-primary" id="save-edit-btn">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Generating timetable...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>
